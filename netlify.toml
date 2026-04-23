@@ -1,0 +1,15 @@
+[build]
+  command = "npm run build"
+  publish = "out"
+
+# 루트 진입 시 클로징 페이지로 유도
+[[redirects]]
+  from = "/"
+  to = "/closing"
+  status = 301
+
+# 잘못된 경로는 클로징으로 (세일즈/미팅용 단일 엔드포인트)
+[[redirects]]
+  from = "/*"
+  to = "/closing"
+  status = 302
