@@ -117,6 +117,7 @@ export default function ClosingPage() {
   const [inputs, setInputs] = useState<ClosingInputs>(DEFAULT_INPUTS);
   const [hyp, setHyp] = useState<ClosingHypothesisState>(DEFAULT_HYP);
   const [exporting, setExporting] = useState(false);
+  const [a4Visible, setA4Visible] = useState(false);
   const reportRef = useRef<HTMLDivElement | null>(null);
   const a4Ref = useRef<HTMLDivElement | null>(null);
 
@@ -276,13 +277,18 @@ export default function ClosingPage() {
                   onClick={async () => {
                     if (!a4Ref.current) return;
                     setExporting(true);
+                    setA4Visible(true);
                     try {
+                      // Let React commit + charts/layout measure before capture.
+                      await new Promise<void>((r) => requestAnimationFrame(() => r()));
+                      await new Promise<void>((r) => requestAnimationFrame(() => r()));
                       const doc = new jsPDF({ unit: "pt", format: "a4" });
                       const canvas = await rasterizeA4(a4Ref.current, 3);
                       addA4Image(doc, canvas);
                       const file = `IDEALAB_Closing_${new Date().toISOString().slice(0, 10)}.pdf`;
                       doc.save(file);
                     } finally {
+                      setA4Visible(false);
                       setExporting(false);
                     }
                   }}
@@ -841,7 +847,10 @@ export default function ClosingPage() {
             {/* Keep it rendered but offscreen so html2canvas captures reliably */}
             <div
               className="pointer-events-none fixed left-0 top-0"
-              style={{ transform: "translateX(-200vw)" }}
+              style={{
+                transform: a4Visible ? "translateX(0)" : "translateX(-200vw)",
+                opacity: a4Visible ? 1 : 0.001,
+              }}
             >
               <div
                 ref={a4Ref}
