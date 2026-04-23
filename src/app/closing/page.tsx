@@ -838,8 +838,11 @@ export default function ClosingPage() {
             </div>
 
             {/* Offscreen fixed A4 page for export */}
-            {/* Keep it in the viewport (opacity 0) so charts/text actually render for html2canvas */}
-            <div className="pointer-events-none fixed left-0 top-0 -z-10 opacity-0">
+            {/* Keep it rendered but offscreen so html2canvas captures reliably */}
+            <div
+              className="pointer-events-none fixed left-0 top-0"
+              style={{ transform: "translateX(-200vw)" }}
+            >
               <div
                 ref={a4Ref}
                 className="relative h-[1123px] w-[794px] overflow-hidden rounded-none bg-black text-white"
