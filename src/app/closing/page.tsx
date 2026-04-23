@@ -61,8 +61,11 @@ function addA4Image(doc: jsPDF, canvas: HTMLCanvasElement) {
   doc.setFillColor(0, 0, 0);
   doc.rect(0, 0, pageW, pageH, "F");
 
-  // Cover (full-bleed): image fills page; may crop edges slightly.
-  const scale = Math.max(pageW / w, pageH / h);
+  // Contain with margin: avoids cropping (report-style).
+  const margin = 24; // pt
+  const maxW = Math.max(0, pageW - margin * 2);
+  const maxH = Math.max(0, pageH - margin * 2);
+  const scale = Math.min(maxW / w, maxH / h);
   const drawW = w * scale;
   const drawH = h * scale;
   const x = (pageW - drawW) / 2;
@@ -835,7 +838,8 @@ export default function ClosingPage() {
             </div>
 
             {/* Offscreen fixed A4 page for export */}
-            <div className="pointer-events-none fixed left-[-14000px] top-0">
+            {/* Keep it in the viewport (opacity 0) so charts/text actually render for html2canvas */}
+            <div className="pointer-events-none fixed left-0 top-0 -z-10 opacity-0">
               <div
                 ref={a4Ref}
                 className="relative h-[1123px] w-[794px] overflow-hidden rounded-none bg-black text-white"
