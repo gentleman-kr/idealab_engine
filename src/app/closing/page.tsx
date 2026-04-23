@@ -39,11 +39,6 @@ function formatPct01(x: number) {
   return `${Math.round(v * 100)}%`;
 }
 
-function formatPct(x: number) {
-  const v = Number.isFinite(x) ? x : 0;
-  return `${Math.round(v)}%`;
-}
-
 async function rasterizeA4(el: HTMLElement, scale = 3) {
   await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
   return await html2canvas(el, {
@@ -160,15 +155,6 @@ export default function ClosingPage() {
     return { monthlyHours, hourlyValue, trendMultiplier };
   }, [computed.safe]);
 
-  const waterfall = useMemo(
-    () => [
-      { k: "Entropy(회수)", v: Math.round(computed.out.entropy.recoverableMonthlyKrw) },
-      { k: "Offer(추가매출)", v: Math.round(computed.out.offer.monthlyRevenueUpliftKrw) },
-      { k: "Pipeline(절감+딥워크)", v: Math.round(computed.out.pipeline.totalMonthlyKrw) },
-    ],
-    [computed.out],
-  );
-
   const waterfallStacked = useMemo(() => {
     const e = Math.max(0, Math.round(computed.out.entropy.recoverableMonthlyKrw));
     const o = Math.max(0, Math.round(computed.out.offer.monthlyRevenueUpliftKrw));
@@ -209,7 +195,7 @@ export default function ClosingPage() {
     const soWhat = delta > 0 ? `가장 큰 레버: ${top?.label ?? "—"} → 이번 주 1% 액션: ${rec}` : "입력값을 넣으면 ROI/레버/실험이 자동으로 정리됩니다.";
 
     return { oneLine, soWhat, topLabel: top?.label ?? "—" };
-  }, [computed.out, computed.safe.monthlyRevenueKrw]);
+  }, [computed]);
 
   const mece = (hyp.mece as unknown as MeceDiagnosis) ?? DEFAULT_HYP.mece!;
   const bottleneck = useMemo(() => pickBottleneck(mece), [mece]);
@@ -517,11 +503,8 @@ export default function ClosingPage() {
                                   </div>
                                   <div className="text-xs text-white/40">근거를 높일수록 추천 정확도가 올라갑니다.</div>
                                 </div>
-                                <div
-                                  className="mt-3 grid gap-3"
-                                  style={{ gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))" }}
-                                >
-                                  <div>
+                                <div className="mt-3 flex flex-wrap gap-3">
+                                  <div className="min-w-[140px] flex-1">
                                     <div className="label">Strength</div>
                                     <input
                                       className="input mt-2"
@@ -543,7 +526,7 @@ export default function ClosingPage() {
                                       }
                                     />
                                   </div>
-                                  <div>
+                                  <div className="min-w-[140px] flex-1">
                                     <div className="label">Confidence</div>
                                     <input
                                       className="input mt-2"
@@ -566,7 +549,7 @@ export default function ClosingPage() {
                                       }
                                     />
                                   </div>
-                                  <div>
+                                  <div className="min-w-[160px] flex-1">
                                     <div className="label">Impact(월,원)</div>
                                     <input
                                       className="input mt-2"
@@ -586,7 +569,7 @@ export default function ClosingPage() {
                                       }
                                     />
                                   </div>
-                                  <div>
+                                  <div className="min-w-[110px] flex-1">
                                     <div className="label">Time(w)</div>
                                     <input
                                       className="input mt-2"
@@ -608,7 +591,7 @@ export default function ClosingPage() {
                                       }
                                     />
                                   </div>
-                                  <div>
+                                  <div className="min-w-[110px] flex-1">
                                     <div className="label">Effort(1-5)</div>
                                     <input
                                       className="input mt-2"
