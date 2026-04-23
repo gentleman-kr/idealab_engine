@@ -517,7 +517,7 @@ export default function ClosingPage() {
                                   </div>
                                   <div className="text-xs text-white/40">근거를 높일수록 추천 정확도가 올라갑니다.</div>
                                 </div>
-                                <div className="mt-3 grid gap-3 lg:grid-cols-[140px,140px,180px,120px,120px]">
+                                <div className="mt-3 grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-[140px,140px,180px,120px,120px]">
                                   <div>
                                     <div className="label">Strength</div>
                                     <input
