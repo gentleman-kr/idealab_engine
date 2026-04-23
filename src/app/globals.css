@@ -6,8 +6,19 @@
   color-scheme: dark;
 }
 
+html,
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
 body {
   @apply min-h-screen bg-bg text-text antialiased;
+}
+
+/* Allow flex/grid children to shrink in narrow embeds */
+* {
+  min-width: 0;
 }
 
 /* Pretendard (CDN) fallback is injected in layout.tsx */
